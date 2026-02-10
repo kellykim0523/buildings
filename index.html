@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --horizon-y: 65vh;
+      --sky-blue: #87CEEB;
+      --nintendo-red: #E60012;
+      --nintendo-yellow: #FFD700;
+      --nintendo-green: #43B047;
+    }
+
+    body, html {
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      background-color: var(--sky-blue);
+      overflow: hidden;
+      font-family: 'Arial Black', sans-serif;
+    }
+
+    /* 배경 구름 애니메이션 */
+    .cloud {
+      position: absolute;
+      background: white;
+      width: 100px; height: 40px;
+      border-radius: 20px;
+      opacity: 0.8;
+      z-index: 1;
+      animation: float linear infinite;
+    }
+    .cloud::after, .cloud::before {
+      content: ''; position: absolute; background: white; border-radius: 50%;
+    }
+    .cloud::after { width: 50px; height: 50px; top: -20px; left: 15px; }
+    .cloud::before { width: 40px; height: 40px; top: -15px; left: 45px; }
+
+    @keyframes float {
+      from { left: -150px; }
+      to { left: 100vw; }
+    }
+
+    /* 수평선 및 하단 지면 */
+    .horizon-line {
+      position: fixed;
+      top: var(--horizon-y);
+      left: 0; width: 100%; height: 10px;
+      background: #000;
+      z-index: 100;
+    }
+    .ground {
+      position: fixed;
+      top: calc(var(--horizon-y) + 10px);
+      left: 0; width: 100%; height: 100%;
+      background: #5D9431; 
+      z-index: 5;
+    }
+
+    /* 스크롤 변환 메커니즘 */
+    .scroll-container {
+      width: 100vh; height: 100vw;
+      transform: rotate(-90deg) translateX(-100vh);
+      transform-origin: top left;
+      overflow-y: scroll;
+      scrollbar-width: none;
+    }
+    .scroll-container::-webkit-scrollbar { display: none; }
+
+    .track {
+      display: flex;
+      width: max-content;
+      height: 100vh;
+      transform: rotate(90deg) translateY(-100vh);
+      transform-origin: top left;
+      padding: 0 10vw;
+      align-items: flex-end;
+    }
+
+    /* 빌딩 공통 */
+    .building {
+      position: relative;
+      flex-shrink: 0;
+      width: 10vw; min-width: 90px;
+      height: var(--h);
+      background-color: var(--c);
+      margin-right: 3vw;
+      bottom: calc(100vh - var(--horizon-y));
+      border: 5px solid #000;
+      transition: all 0.4s cubic-bezier(0.17, 0.89, 0.32, 1.3);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 10;
+    }
+
+    .building:hover {
+      width: 25vw; height: 58vh;
+      z-index: 150;
+      box-shadow: 15px 15px 0px rgba(0,0,0,0.3);
+    }
+
+    /* 창문 패턴 */
+    .windows {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: radial-gradient(rgba(255,255,255,0.3) 15%, transparent 15%);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+
+    /* 정보 텍스트 */
+    .info {
+      opacity: 0; color: white; text-align: center;
+      text-shadow: 3px 3px 0px #000;
+      padding: 20px; transition: 0.3s;
+    }
+    .building:hover .info { opacity: 1; }
+    .info h2 { font-size: 1.8rem; margin: 0; white-space: nowrap; }
+    .info p { font-size: 1rem; margin: 10px 0 0; }
+
+  </style>
+</head>
+<body>
+
+  <div class="cloud" style="top: 10%; animation-duration: 25s; transform: scale(0.8);"></div>
+  <div class="cloud" style="top: 25%; animation-duration: 40s; animation-delay: -5s;"></div>
+  <div class="cloud" style="top: 15%; animation-duration: 35s; animation-delay: -15s; transform: scale(1.2);"></div>
+
+  <div class="horizon-line"></div>
+  <div class="ground"></div>
+
+  <div class="scroll-container">
+    <div class="track">
+      <div class="building" style="--h: 45vh; --c: #FF5E5E;">
+        <div class="windows"></div>
+        <div class="info"><h2>Empire State</h2><p>The King of NYC</p></div>
+      </div>
+      <div class="building" style="--h: 52vh; --c: #58A7FF;">
+        <div class="windows"></div>
+        <div class="info"><h2>Chrysler</h2><p>Art Deco Icon</p></div>
+      </div>
+      <div class="building" style="--h: 25vh; --c: #FFD200;">
+        <div class="windows"></div>
+        <div class="info"><h2>Flatiron</h2><p>The 23rd St. Wedge</p></div>
+      </div>
+      <div class="building" style="--h: 58vh; --c: #9B59B6;">
+        <div class="windows"></div>
+        <div class="info"><h2>One World</h2><p>Freedom Tower</p></div>
+      </div>
+      <div class="building" style="--h: 35vh; --c: #46C35F;">
+        <div class="windows"></div>
+        <div class="info"><h2>The Vessel</h2><p>Hudson Yards</p></div>
+      </div>
+      <div class="building" style="--h: 48vh; --c: #FF91CC;">
+        <div class="windows"></div>
+        <div class="info"><h2>Rockefeller</h2><p>Top of the Rock</p></div>
+      </div>
+      <div class="building" style="--h: 30vh; --c: #FF7F50;">
+        <div class="windows"></div>
+        <div class="info"><h2>MetLife</h2><p>Park Ave Hub</p></div>
+      </div>
+      <div class="building" style="--h: 55vh; --c: #40E0D0;">
+        <div class="windows"></div>
+        <div class="info"><h2>Bank of America</h2><p>Eco Skyline</p></div>
+      </div>
+    </div>
+  </div>
+<script>
+  (() => {
+    const scroller = document.querySelector('.scroll-container');
+    if (!scroller) return;
+
+    // 트랙패드/마우스 휠 모두를 "가로 이동"으로 통일
+    const onWheel = (e) => {
+      // 세로/가로 입력 중 "더 큰 쪽"을 가로 이동값으로 사용
+      const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+
+      // 회전 스크롤 구조에서는 scrollTop이 곧 "가로 진행" 역할
+      scroller.scrollTop += d;
+
+      // 기본 스크롤(세로/가로)을 막아서 방향이 섞이지 않게 함
+      e.preventDefault();
+    };
+
+    // passive:false 필수 (preventDefault가 먹히려면)
+    scroller.addEventListener('wheel', onWheel, { passive: false });
+  })();
+</script>
+
+</body>
+</html>
