@@ -19,34 +19,58 @@ html, body{
   font-family: Inter, system-ui, -apple-system, sans-serif;
 }
 
-/* -----------------------
-   ☁️ 구름 애니메이션 (기존 방식)
------------------------ */
-.sky-elements{ position: fixed; inset: 0; pointer-events:none; z-index: 1; }
+/* =================================
+   MORE CLOUDS
+================================= */
 
 .cloud{
-  position: absolute;
-  background: #fff;
-  width: 110px;
-  height: 44px;
-  border-radius: 999px;
-  opacity: .86;
-  z-index: 1;
+  position:absolute;
+  background:#fff;
+  border-radius:999px;
+  opacity:.9;
   animation: float linear infinite;
-  filter: drop-shadow(0 10px 0 rgba(0,0,0,0.08));
+  filter: drop-shadow(0 10px 0 rgba(0,0,0,.06));
 }
-.cloud::before, .cloud::after{
+
+/* 랜덤 크기 */
+.c1{ top:5%;  width:120px; height:45px; animation-duration:40s; }
+.c2{ top:12%; width:150px; height:55px; animation-duration:60s; animation-delay:-10s; }
+.c3{ top:18%; width:90px;  height:35px; animation-duration:35s; animation-delay:-5s; }
+.c4{ top:25%; width:170px; height:60px; animation-duration:75s; animation-delay:-25s; }
+.c5{ top:32%; width:110px; height:40px; animation-duration:45s; animation-delay:-15s; }
+.c6{ top:40%; width:140px; height:50px; animation-duration:65s; }
+.c7{ top:48%; width:95px;  height:38px; animation-duration:38s; animation-delay:-20s; }
+.c8{ top:55%; width:180px; height:65px; animation-duration:85s; animation-delay:-30s; }
+
+
+/* 구름 둥글게 */
+.cloud::before,
+.cloud::after{
   content:"";
   position:absolute;
   background:#fff;
   border-radius:999px;
 }
-.cloud::after{ width: 55px; height: 55px; top: -22px; left: 18px; }
-.cloud::before{ width: 45px; height: 45px; top: -18px; left: 52px; }
-@keyframes float{ from { left: -180px; } to { left: 100vw; } }
-.cloud--a{ top: 12%; animation-duration: 25s; transform: scale(0.8); }
-.cloud--b{ top: 25%; animation-duration: 40s; animation-delay: -5s; }
-.cloud--c{ top: 18%; animation-duration: 35s; animation-delay: -15s; transform: scale(1.2); }
+
+.cloud::before{
+  width:50%;
+  height:120%;
+  top:-40%;
+  left:20%;
+}
+
+.cloud::after{
+  width:40%;
+  height:100%;
+  top:-30%;
+  left:55%;
+}
+
+@keyframes float{
+  from { left:-250px; }
+  to { left:100vw; }
+}
+
 
 /* -----------------------
    horizon / ground

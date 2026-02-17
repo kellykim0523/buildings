@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="building.css" />
+</head>
+<body>
+
+  <!-- ☁️ clouds -->
+  <div class="sky-elements" aria-hidden="true">
+    <div class="cloud cloud--a"></div>
+    <div class="cloud cloud--b"></div>
+    <div class="cloud cloud--c"></div>
+    <div class="cloud cloud--d"></div>
+    <div class="cloud cloud--e"></div>
+    <div class="cloud cloud--f"></div>
+  </div>
+  <div id="weatherFx" aria-hidden="true"></div>
+
+  <!-- top controls -->
+  <header class="top">
+    <a class="back" href="index.html">← Skyline</a>
+
+    <div class="top-actions">
+      <button class="btn" id="btnSpawn" type="button">Spawn</button>
+      <button class="btn" id="btnShuffle" type="button">Shuffle</button>
+        <button class="btn" id="btnMagnet" type="button">Magnet</button>
+      <button class="btn" id="btnRandom" type="button">Random</button>
+    </div>
+  </header>
+
+  <!-- stage -->
+  <main class="stage" id="stage" aria-label="Experimental info stage">
+    <!-- building image becomes a “totem” -->
+    <div class="totem" id="totem" tabindex="0">
+      <img id="bImg" alt="" />
+      <div class="totem__label">
+        <div class="totem__title" id="bName"></div>
+        <div class="totem__tag" id="bTag"></div>
+      </div>
+    </div>
+
+    <!-- fragments injected here -->
+  </main>
+
+  <script src="building.js"></script>
+</body>
+</html>

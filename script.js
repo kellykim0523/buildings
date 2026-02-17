@@ -53,3 +53,13 @@
     }
   });
 })();
+track.addEventListener('click', (e) => {
+  const b = e.target.closest('.building');
+  if (!b) return;
+
+  const id = b.dataset.id;
+  if (!id) return;
+
+  // ✅ 다른 페이지로 이동
+  window.location.href = `building.html?id=${encodeURIComponent(id)}`;
+});
