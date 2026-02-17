@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FINAL Weather + Time Test</title>
+
+<style>
+:root{ --stroke:#000; --paper:#fff; }
+
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  height:100%;
+  font-family:system-ui,-apple-system,Inter,Arial,sans-serif;
+  transition:background 800ms ease;
+}
+
+/* ================= TIME ================= */
+body.time-morning{
+  background: linear-gradient(180deg,#c8ecff 0%,#9de1ff 55%,#87d9ff 100%);
+}
+body.time-day{
+  background: linear-gradient(180deg,#9de1ff 0%,#8ddcff 60%,#7fd6ff 100%);
+}
+body.time-sunset{
+  background: linear-gradient(180deg,#ffb56b 0%,#ff7fb0 50%,#9de1ff 100%);
+}
+body.time-night{
+  background: linear-gradient(180deg,#08162f 0%,#0f2b5a 60%,#1b3f7a 100%);
+}
+
+/* ================= SKY CLOUD BASE ================= */
+.sky-elements{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+.cloud{
+  position:absolute;
+  background:#fff;
+  width:140px;
+  height:55px;
+  border-radius:999px;
+  opacity:.85;
+  animation:float linear infinite;
+  filter:drop-shadow(0 8px 0 rgba(0,0,0,.08));
+}
+.cloud::before,.cloud::after{
+  content:"";
+  position:absolute;
+  background:#fff;
+  border-radius:999px;
+}
+.cloud::after{width:65px;height:65px;top:-28px;left:22px;}
+.cloud::before{width:55px;height:55px;top:-22px;left:65px;}
+
+@keyframes float{
+  from{left:-200px;}
+  to{left:100vw;}
+}
+
+.cloud--a{top:10%;animation-duration:40s;}
+.cloud--b{top:25%;animation-duration:55s;}
+.cloud--c{top:45%;animation-duration:48s;}
+.cloud--d{top:70%;animation-duration:65s;}
+
+/* ================= WEATHER FX LAYER ================= */
+#weatherFx{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1; /* behind UI */
+}
+
+/* ---------- CLOUDY EXTRA ---------- */
+.fx-cloud{
+  position:absolute;
+  background:#fff;
+  border-radius:999px;
+  opacity:.92;
+  animation:fxFloat linear infinite;
+  filter:drop-shadow(0 14px 0 rgba(0,0,0,.09));
+}
+.fx-cloud::before,.fx-cloud::after{
+  content:"";
+  position:absolute;
+  background:#fff;
+  border-radius:999px;
+}
+.fx-cloud::before{width:50%;height:120%;top:-40%;left:18%;}
+.fx-cloud::after{width:45%;height:110%;top:-35%;left:55%;}
+
+@keyframes fxFloat{
+  from{transform:translateX(-260px);}
+  to{transform:translateX(110vw);}
+}
+
+/* ---------- RAIN ---------- */
+.rain-drop{
+  position:absolute;
+  top:-40px;
+  width:2px;
+  height:14px;
+  background:rgba(255,255,255,.9);
+  border-radius:999px;
+  animation:rainFall linear forwards;
+}
+.rain-drop.thick{width:3px;height:20px;}
+.rain-drop.thin{width:1px;height:10px;}
+
+@keyframes rainFall{
+  to{transform:translateY(120vh) rotate(var(--tilt));}
+}
+
+/* ---------- FOG (clean UI) ---------- */
+.fog{
+  position:absolute;
+  inset:-10%;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,.65) 0 30%, transparent 65%),
+    radial-gradient(circle at 80% 40%, rgba(255,255,255,.55) 0 28%, transparent 65%),
+    linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,.15));
+  filter:blur(14px);
+  opacity:.75;
+  mix-blend-mode:screen;
+  animation:fogDrift 12s ease-in-out infinite alternate;
+}
+.fog.fog--2{
+  filter:blur(22px);
+  opacity:.6;
+}
+
+@keyframes fogDrift{
+  from{transform:translate3d(-2%,-1%,0);}
+  to{transform:translate3d(3%,2%,0);}
+}
+
+/* ================= UI ================= */
+.hud{
+  position:fixed;
+  top:16px;
+  left:16px;
+  right:16px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  z-index:10;
+}
+
+.group{
+  display:flex;
+  gap:8px;
+  background:#fff;
+  border:2px solid var(--stroke);
+  border-radius:999px;
+  padding:8px 10px;
+  box-shadow:10px 10px 0 rgba(0,0,0,.1);
+}
+
+button{
+  padding:8px 12px;
+  border-radius:999px;
+  border:2px solid var(--stroke);
+  background:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+button.active{background:#000;color:#fff;}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:5;
+}
+.card{
+  background:#fff;
+  border:2px solid var(--stroke);
+  border-radius:28px;
+  padding:20px;
+  box-shadow:12px 12px 0 rgba(0,0,0,.12);
+}
+</style>
+</head>
+
+<body class="time-day">
+
+<div class="sky-elements">
+  <div class="cloud cloud--a"></div>
+  <div class="cloud cloud--b"></div>
+  <div class="cloud cloud--c"></div>
+  <div class="cloud cloud--d"></div>
+</div>
+
+<div id="weatherFx"></div>
+
+<div class="hud">
+  <div class="group">
+    <button data-time="time-morning">Morning</button>
+    <button data-time="time-day" class="active">Day</button>
+    <button data-time="time-sunset">Sunset</button>
+    <button data-time="time-night">Night</button>
+  </div>
+  <div class="group">
+    <button data-weather="" class="active">Clear</button>
+    <button data-weather="cloudy">Cloudy</button>
+    <button data-weather="rain">Rain</button>
+    <button data-weather="fog">Fog</button>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="card">
+    <h2>FINAL Weather Test</h2>
+    <p>Cloudy = huge + many clouds.<br>
+       Rain = random falling drops.<br>
+       Fog = obvious atmospheric blur (UI remains readable).</p>
+  </div>
+</div>
+
+<script>
+const body=document.body;
+const fx=document.getElementById("weatherFx");
+let rainTimer=null, rainBurstTimer=null;
+
+function clearFx(){
+  fx.innerHTML="";
+  if(rainTimer){clearInterval(rainTimer);rainTimer=null;}
+  if(rainBurstTimer){clearInterval(rainBurstTimer);rainBurstTimer=null;}
+}
+
+function spawnClouds(count=26){
+  clearFx();
+  for(let i=0;i<count;i++){
+    const c=document.createElement("div");
+    c.className="fx-cloud";
+    const scale=Math.random()*1+0.9;
+    c.style.width=190*scale+"px";
+    c.style.height=72*scale+"px";
+    c.style.top=Math.random()*85+"%";
+    c.style.left=-300-Math.random()*800+"px";
+    c.style.animationDuration=25+Math.random()*70+"s";
+    c.style.animationDelay=-Math.random()*60+"s";
+    fx.appendChild(c);
+  }
+}
+
+function spawnRain(){
+  clearFx();
+  function makeDrop(){
+    const d=document.createElement("div");
+    d.className="rain-drop";
+    const r=Math.random();
+    if(r>.85)d.classList.add("thick");
+    if(r<.25)d.classList.add("thin");
+    d.style.left=Math.random()*100+"%";
+    d.style.setProperty("--tilt",(Math.random()*6-3)+"deg");
+    d.style.animationDuration=(0.55+Math.random()*0.65)+"s";
+    fx.appendChild(d);
+    d.addEventListener("animationend",()=>d.remove());
+  }
+  rainTimer=setInterval(()=>{
+    for(let i=0;i<8+Math.random()*8;i++)makeDrop();
+  },120);
+  rainBurstTimer=setInterval(()=>{
+    for(let i=0;i<30;i++)makeDrop();
+  },1200);
+}
+
+function spawnFog(){
+  clearFx();
+  const f1=document.createElement("div");
+  const f2=document.createElement("div");
+  f1.className="fog";
+  f2.className="fog fog--2";
+  fx.appendChild(f1);
+  fx.appendChild(f2);
+}
+
+function setWeather(kind){
+  body.classList.remove("weather-cloudy","weather-rain","weather-fog");
+  if(!kind){clearFx();return;}
+  body.classList.add("weather-"+kind);
+  if(kind==="cloudy")spawnClouds();
+  if(kind==="rain")spawnRain();
+  if(kind==="fog")spawnFog();
+}
+
+document.querySelectorAll("[data-time]").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll("[data-time]").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    body.classList.remove("time-morning","time-day","time-sunset","time-night");
+    body.classList.add(btn.dataset.time);
+  }
+});
+
+document.querySelectorAll("[data-weather]").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll("[data-weather]").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    setWeather(btn.dataset.weather);
+  }
+});
+</script>
+
+</body>
+</html>

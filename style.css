@@ -238,3 +238,30 @@ html, body{
   background: transparent !important;
 }
 
+/* tiny hidden-ish weather test link */
+.wx-link{
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(0,0,0,0.18);
+  text-decoration: none;
+  color: transparent; /* dot text hidden */
+  z-index: 9999;
+  cursor: pointer;
+}
+
+/* only visible on hover/focus (so it’s “almost invisible”) */
+.wx-link:hover,
+.wx-link:focus{
+  background: rgba(255,255,255,0.85);
+  border-color: rgba(0,0,0,0.7);
+  color: rgba(0,0,0,0.65);
+  font-size: 12px;
+  line-height: 14px;
+  text-align: center;
+  outline: none;
+}
